@@ -28,20 +28,20 @@ install-dagger: ## Install Dagger CLI (macOS/Linux)
 
 validate: ## Validate all mainnet GenTx files
 	@echo "🚀 Running GenTx validation..."
-	@cd ci && dagger call validate-gentx --source ../
+	@dagger call -m ci validate-gentx --source .
 
 validate-verbose: ## Run validation with detailed output
 	@echo "🚀 Running GenTx validation with verbose output..."
-	@cd ci && dagger call run-local-validation --source ../
+	@dagger call -m ci run-local-validation --source .
 
 test-tool: ## Test that check-genesis tool builds correctly  
 	@echo "🔧 Testing check-genesis tool build..."
-	@cd ci && dagger call test-check-genesis-tool --source ../
+	@dagger call -m ci test-check-genesis-tool --source .
 
 validate-custom: ## Validate with custom parameters (use NETWORK, WARDEND_VERSION, GO_VERSION env vars)
 	@echo "🚀 Running GenTx validation with custom parameters..."
-	@cd ci && dagger call validate-gentx \
-		--source ../ \
+	@dagger call -m ci validate-gentx \
+		--source . \
 		--network $(or $(NETWORK),mainnet) \
 		--wardend-version $(or $(WARDEND_VERSION),v0.7.0-rc3) \
 		--go-version $(or $(GO_VERSION),1.24)
@@ -53,7 +53,7 @@ dev-test: test-tool validate-verbose ## Run both tool test and validation with v
 
 clean: ## Clean Dagger cache and temporary files
 	@echo "🧹 Cleaning Dagger cache..."
-	@cd ci && dagger query -f - <<< '{ core { cacheEntries { clear } } }'
+	@dagger query -f - <<< '{ core { cacheEntries { clear } } }'
 	@echo "Cache cleaned!"
 
 # Quick validation for different scenarios

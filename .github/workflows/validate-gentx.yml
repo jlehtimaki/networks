@@ -35,6 +35,7 @@ jobs:
         with:
           version: v0.18.17
           verb: call
+          module: ci
           args: >-
             validate-gentx-cli
             --source .
@@ -55,18 +56,20 @@ jobs:
             });
 
             // Find existing validation comment
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && comment.body.includes('## GenTx Validation Results')
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('## GenTx Validation Results')
             );
 
             const validationStatus = '${{ steps.validation.outcome }}';
             const network = '${{ github.event.inputs.network || 'mainnet' }}';
-            
+
             let commentBody = `## GenTx Validation Results\n\n`;
             commentBody += `**Network:** ${network}\n`;
             commentBody += `**Wardend Version:** ${{ env.WARDEND_VERSION }}\n`;
-            commentBody += `**Status:** ${validationStatus === 'success' ? '✅ PASSED' : '❌ FAILED'}\n\n`;
-            
+            const statusIcon = validationStatus === 'success' ? '✅ PASSED' : '❌ FAILED';
+            commentBody += `**Status:** ${statusIcon}\n\n`;
+
             if (validationStatus === 'success') {
               commentBody += `🎉 All GenTx files have been successfully validated!\n\n`;
               commentBody += `The validation process checked:\n`;
@@ -74,15 +77,17 @@ jobs:
               commentBody += `- Signature validity\n`;
               commentBody += `- Network compatibility\n`;
             } else {
-              commentBody += `⚠️ GenTx validation failed. Please check the workflow logs for details.\n\n`;
+              commentBody += `⚠️ GenTx validation failed. `;
+              commentBody += `Please check the workflow logs for details.\n\n`;
               commentBody += `Common issues to check:\n`;
               commentBody += `- File format is correct JSON\n`;
               commentBody += `- Signatures are valid\n`;
               commentBody += `- Network parameters match\n`;
             }
-            
+
             commentBody += `\n---\n`;
-            commentBody += `*Validation run: ${context.runNumber} | Commit: ${context.sha.substring(0, 7)}*`;
+            const commitHash = context.sha.substring(0, 7);
+            commentBody += `*Validation run: ${context.runNumber} | Commit: ${commitHash}*`;
 
             if (botComment) {
               // Update existing comment
