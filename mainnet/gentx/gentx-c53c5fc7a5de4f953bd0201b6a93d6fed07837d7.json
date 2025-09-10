@@ -40,7 +40,7 @@
       {
         "public_key": {
           "@type": "/cosmos.evm.crypto.v1.ethsecp256k1.PubKey",
-          "key": "AwCl/CsI/i4B1rN85+rAaIJer9vVfUCiMVda5RUsNFD3"
+          "key": "AWCl/CsI/i4B1rN85+rAaIJer9vVfUCiMVda5RUsNFD3"
         },
         "mode_info": {
           "single": {
